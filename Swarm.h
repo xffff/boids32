@@ -1,7 +1,11 @@
+#include <vector>
+#include <memory>
+
 class Agent;
 class Swarm
 {
 public:
+    Swarm(){};
     Swarm(int numAgents);
     ~Swarm(){};
     void setMaxSpeed(float maxSpeed);
@@ -11,7 +15,7 @@ public:
 private:
     std::vector<std::unique_ptr<Agent>> agents;
     enum mode {NORMAL, AVERAGE};
-    int numagents;
+    static int numagents;
     float friction, gravity;
     float gravpoint[2], avgvelocity[2], centroid[2]; // x, y
     void genFrame(std::unique_ptr<Agent>);

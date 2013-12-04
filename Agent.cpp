@@ -1,3 +1,4 @@
+#include "Swarm.h"
 #include "Agent.h"
 
 Agent::Agent()
@@ -6,8 +7,8 @@ Agent::Agent()
 
 Agent::Agent(float x, float y, float vx, float vy)
 {
-    self->x = x;
-    self->y = y;
-    self->vx = vx;
-    self->vy = vy;
+    this->x = x;
+    this->y = y;
+    this->vx = vx;
+    this->vy = vy;
 }
