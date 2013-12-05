@@ -17,9 +17,10 @@ private:
     void addAgent();
     enum mode {NORMAL, AVERAGE};
     float friction, gravity;
-    float gravpoint[2], avgvelocity[2], centroid[2]; // x, y
-    void genFrame(int agentIndex);
-    float clip(float n, float lower, float upper);
+    float gravpoint[2], avgvelocity[2], centroid[2]; // x, y    
+    void genFrame(int agentIndex); // mek som boobs
+    void separate(int agentIndex); // rules
+    float clip(float n, float lower, float upper); // just a helper
 };
 
 class Agent : Swarm {
