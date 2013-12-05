@@ -19,6 +19,7 @@ private:
     float friction, gravity;
     float gravpoint[2], avgvelocity[2], centroid[2]; // x, y
     void genFrame(int agentIndex);
+    float clip(float n, float lower, float upper);
 };
 
 class Agent : Swarm {

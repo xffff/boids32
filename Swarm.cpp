@@ -6,7 +6,7 @@
 #include <time.h>
 #include "Swarm.h"
 
-Swarm::Swarm(int numAgents) : numAgents(numAgents)
+Swarm::Swarm(int numAgents) : numAgents(numAgents), friction(0.25), gravity(0.02)
 {
     srand(time(NULL)); // seed random gen
     std::cout<<"Swarm creating " <<numAgents<< " Agents...\n";
@@ -49,7 +49,28 @@ std::vector<std::vector<float> > Swarm::getBoids()
     return swarmVals;
 }
 
-void Swarm::genFrame(int agentIndex)
+void Swarm::genFrame(int i)
 {
-    ;
+    float px = agents[i]->vx;
+    float py = agents[i]->vy;
+
+    // @TODO: rules go here
+
+    // inertia
+    agents[i]->vx = (px*agents[i]->inertia) + (agents[i]->vx*(1-agents[i]->inertia));
+    agents[i]->vy = (px*agents[i]->inertia) + (agents[i]->vy*(1-agents[i]->inertia));
+
+    // velocity
+    agents[i]->vx = clip(agents[i]->vx,agents[i]->maxvel * -1,agents[i]->maxvel);
+    agents[i]->vy = clip(agents[i]->vy,agents[i]->maxvel * -1,agents[i]->maxvel);
+
+    // friction
+    agents[i]->x = agents[i]->x + (agents[i]->vx * (1-friction));
+    agents[i]->y = agents[i]->y + (agents[i]->vy * (1-friction));
+}
+
+
+float Swarm::clip(float n, float lower, float upper)
+{
+    return std::max(lower, std::min(n, upper));
 }
