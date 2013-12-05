@@ -10,20 +10,22 @@ public:
     void setMaxSpeed(float maxSpeed);
     void setNumAgents(int numAgents);
     void setFriction(float friction);
-    std::vector<std::unique_ptr<Agent> > agents;
+    std::vector<std::vector<float> > getBoids();
+    int numAgents;
 private:
+    std::vector<std::unique_ptr<Agent> > agents;
     void addAgent();
     enum mode {NORMAL, AVERAGE};
-    static int numagents;
     float friction, gravity;
     float gravpoint[2], avgvelocity[2], centroid[2]; // x, y
+    void genFrame(int agentIndex);
+    float clip(float n, float lower, float upper);
 };
 
-class Agent : public Swarm {
+class Agent : Swarm {
 public:
     Agent() : x(0), y(0), vx(0), vy(0) {};
     Agent(float x, float y, float vx, float vy)
 	: x(x), y(y), vx(vx), vy(vy) {};
-protected:
     float x, y, vx, vy, separation, alignment, coherence, inertia, maxvel, septhresh;
 };
