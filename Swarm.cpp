@@ -16,8 +16,14 @@ Swarm::Swarm(int numAgents)
 void Swarm::addAgent()
 {
     float vals[4];
-    for(int i=0; i<4; i++) { vals[i] = (float)(((rand() % RAND_MAX) / RAND_MAX) * 2) - 1; }
-    std::unique_ptr<Agent> temp(new Agent(vals[0], vals[1], vals[2], vals[3]));
-    std::cout<<i<<": "<<vals[0]<<", "<<vals[1]", "<<vals[2]<<", "<<vals[3]<<std::endl;
-    agents.push_back(std::move(temp));
+    for(int i=0; i<4; i++) 
+	{ vals[i] = ((float) rand() / (RAND_MAX)) * 2 - 1; }
+
+    std::cout<<"Agent: "
+	     <<vals[0]<<", "
+	     <<vals[1]<<", "
+	     <<vals[2]<<", "
+	     <<vals[3]<<std::endl;
+    std::unique_ptr<Agent> p(new Agent(vals[0], vals[1], vals[2], vals[3]));
+    agents.push_back(std::move(p));    
 }
