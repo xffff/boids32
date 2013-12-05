@@ -111,3 +111,27 @@ void Swarm::separate(int a)
 	}
     }
 }
+
+void Swarm::align(int a)
+{
+    float dvx = avgvelocity[0] - agents[a]->vx;
+    float dvy = avgvelocity[1] - agents[a]->vy;
+    agents[a]->vx = agents[a]->vx + (dvx*agents[a]->alignment);
+    agents[a]->vy = agents[a]->vy + (dvy*agents[a]->alignment);
+}
+
+void Swarm::cohere(int a)
+{
+    float dx = centroid[0] - agents[a]->x;
+    float dy = centroid[1] - agents[a]->y;
+    agents[a]->vx = agents[a]->vx + (dx*agents[a]->coherence);
+    agents[a]->vy = agents[a]->vy + (dy*agents[a]->coherence);
+}
+
+void Swarm::gravitate(int a)
+{
+    float dx = gravpoint[0] - agents[a]->x;
+    float dy = gravpoint[1] - agents[a]->y;
+    agents[a]->vx = agents[a]->vx + (dx*gravity);
+    agents[a]->vy = agents[a]->vy + (dy*gravity);
+}

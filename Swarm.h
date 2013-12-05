@@ -20,6 +20,10 @@ private:
     float gravpoint[2], avgvelocity[2], centroid[2]; // x, y    
     void genFrame(int agentIndex); // mek som boobs
     void separate(int agentIndex); // rules
+    void align(int agentIndex);
+    void cohere(int agentIndex);
+    void gravitate(int agentIndex);
+
     float clip(float n, float lower, float upper); // just a helper
 };
 
