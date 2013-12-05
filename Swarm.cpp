@@ -20,6 +20,14 @@ void Swarm::addAgent()
 	{ vals[i] = ((float) rand() / (RAND_MAX)) * 2 - 1; }
 
     std::unique_ptr<Agent> p(new Agent(vals[0], vals[1], vals[2], vals[3]));
+
+    p->separation	= (float) rand() / RAND_MAX;
+    p->alignment	= (float) rand() / RAND_MAX;
+    p->coherence	= (float) rand() / RAND_MAX;
+    p->inertia		= (float) rand() / RAND_MAX;
+    p->maxvel		= (float) rand() / RAND_MAX;
+    p->septhresh	= (float) rand() / RAND_MAX;
+    
     agents.push_back(std::move(p));    
 }
 
