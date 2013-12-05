@@ -63,7 +63,8 @@ void Swarm::genFrame(int i)
     float py = agents[i]->vy;
 
     // @TODO: rules go here
-
+    separate(i);
+    
     // inertia
     agents[i]->vx = (px*agents[i]->inertia) + (agents[i]->vx*(1-agents[i]->inertia));
     agents[i]->vy = (px*agents[i]->inertia) + (agents[i]->vy*(1-agents[i]->inertia));
@@ -81,4 +82,32 @@ void Swarm::genFrame(int i)
 float Swarm::clip(float n, float lower, float upper)
 {
     return std::max(lower, std::min(n, upper));
+}
+
+void Swarm::separate(int a)
+{
+    for(int i=0; i<numAgents; i++) {
+	if(a != i) {
+	    float mag = 0;
+	    float dx = agents[i]->x - agents[a]->x;
+	    float dy = agents[i]->y - agents[a]->y;
+	    if(dx > 0.5) { dx--; } else if(dx < -0.5) { dx++; }
+	    if(dy > 0.5) { dy--; } else if(dy < -0.5) { dy++; }
+	    if(abs(dx) > 0.0001 && abs(dy) > 0.0001)
+		{ mag = dx*dx + dy*dy; }
+	    else
+		{ mag = 0.01; }
+	    if(mag < agents[a]->septhresh) {
+		float proxscale = 0;
+		if(mag < 0.0001) {
+		    proxscale = 8;
+		} else {
+		    proxscale = agents[a]->septhresh /
+			(agents[a]->septhresh - (agents[a]->septhresh - mag));
+		}
+		agents[a]->vx = agents[a]->vx - (dx*agents[a].separation*proxscale);
+		agents[a]->vy = agents[a]->vy - (dy*agents[a].separation*proyscale);
+	    }
+	}
+    }
 }
