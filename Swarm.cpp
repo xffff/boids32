@@ -57,28 +57,81 @@ std::vector<std::vector<float> > Swarm::getBoids()
     return swarmVals;
 }
 
-void Swarm::genFrame(int i)
+void Swarm::genFrame(int a)
 {
-    float px = agents[i]->vx;
-    float py = agents[i]->vy;
+    float px = agents[a]->vx;
+    float py = agents[a]->vy;
 
     // @TODO: rules go here
-
+    separate(a);
+    
     // inertia
-    agents[i]->vx = (px*agents[i]->inertia) + (agents[i]->vx*(1-agents[i]->inertia));
-    agents[i]->vy = (px*agents[i]->inertia) + (agents[i]->vy*(1-agents[i]->inertia));
+    agents[a]->vx = (px*agents[a]->inertia) + (agents[a]->vx*(1-agents[a]->inertia));
+    agents[a]->vy = (px*agents[a]->inertia) + (agents[a]->vy*(1-agents[a]->inertia));
 
     // velocity
-    agents[i]->vx = clip(agents[i]->vx,agents[i]->maxvel * -1,agents[i]->maxvel);
-    agents[i]->vy = clip(agents[i]->vy,agents[i]->maxvel * -1,agents[i]->maxvel);
+    agents[a]->vx = clip(agents[a]->vx,agents[a]->maxvel * -1,agents[a]->maxvel);
+    agents[a]->vy = clip(agents[a]->vy,agents[a]->maxvel * -1,agents[a]->maxvel);
 
     // friction
-    agents[i]->x = agents[i]->x + (agents[i]->vx * (1-friction));
-    agents[i]->y = agents[i]->y + (agents[i]->vy * (1-friction));
+    agents[a]->x = agents[a]->x + (agents[a]->vx * (1-friction));
+    agents[a]->y = agents[a]->y + (agents[a]->vy * (1-friction));
 }
 
 
 float Swarm::clip(float n, float lower, float upper)
 {
     return std::max(lower, std::min(n, upper));
+}
+
+void Swarm::separate(int a)
+{
+    for(int i=0; i<numAgents; i++) {
+	if(a != i) {
+	    float mag = 0;
+	    float dx = agents[i]->x - agents[a]->x;
+	    float dy = agents[i]->y - agents[a]->y;
+	    if(dx > 0.5) { dx--; } else if(dx < -0.5) { dx++; }
+	    if(dy > 0.5) { dy--; } else if(dy < -0.5) { dy++; }
+	    if(abs(dx) > 0.0001 && abs(dy) > 0.0001)
+		{ mag = dx*dx + dy*dy; }
+	    else
+		{ mag = 0.01; }
+	    if(mag < agents[a]->septhresh) {
+		float proxscale = 0;
+		if(mag < 0.0001) {
+		    proxscale = 8;
+		} else {
+		    proxscale = agents[a]->septhresh /
+			(agents[a]->septhresh - (agents[a]->septhresh - mag));
+		}
+		agents[a]->vx = agents[a]->vx - (dx*agents[a]->separation*proxscale);
+		agents[a]->vy = agents[a]->vy - (dy*agents[a]->separation*proxscale);
+	    }
+	}
+    }
+}
+
+void Swarm::align(int a)
+{
+    float dvx = avgvelocity[0] - agents[a]->vx;
+    float dvy = avgvelocity[1] - agents[a]->vy;
+    agents[a]->vx = agents[a]->vx + (dvx*agents[a]->alignment);
+    agents[a]->vy = agents[a]->vy + (dvy*agents[a]->alignment);
+}
+
+void Swarm::cohere(int a)
+{
+    float dx = centroid[0] - agents[a]->x;
+    float dy = centroid[1] - agents[a]->y;
+    agents[a]->vx = agents[a]->vx + (dx*agents[a]->coherence);
+    agents[a]->vy = agents[a]->vy + (dy*agents[a]->coherence);
+}
+
+void Swarm::gravitate(int a)
+{
+    float dx = gravpoint[0] - agents[a]->x;
+    float dy = gravpoint[1] - agents[a]->y;
+    agents[a]->vx = agents[a]->vx + (dx*gravity);
+    agents[a]->vy = agents[a]->vy + (dy*gravity);
 }
