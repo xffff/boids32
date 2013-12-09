@@ -74,10 +74,21 @@ void Swarm::genFrame(int a)
     agents[a]->vy = clip(agents[a]->vy,agents[a]->maxvel * -1,agents[a]->maxvel);
 
     // friction
-    agents[a]->x = agents[a]->x + (agents[a]->vx * (1-friction));
-    agents[a]->y = agents[a]->y + (agents[a]->vy * (1-friction));
+    agents[a]->x += agents[a]->vx * (1-friction);
+    agents[a]->y += agents[a]->vy * (1-friction);
+
+    // wrap agent in torus space (could convert this to a bounce or something???)
+    twrap(a);
 }
 
+
+void Swarm::twrap(int a)
+{
+     if(agents[a]->x < 0)	{ agents[a]->x += 1; }
+     else if(agents[a]->x > 1)	{ agents[a]->x -= 1; }
+     if(agents[a]->y < 0)	{ agents[a]->y += 1; }
+     else if(agents[a]->y > 1)	{ agents[a]->y -= 1; }
+}
 
 float Swarm::clip(float n, float lower, float upper)
 {
@@ -105,8 +116,8 @@ void Swarm::separate(int a)
 		    proxscale = agents[a]->septhresh /
 			(agents[a]->septhresh - (agents[a]->septhresh - mag));
 		}
-		agents[a]->vx = agents[a]->vx - (dx*agents[a]->separation*proxscale);
-		agents[a]->vy = agents[a]->vy - (dy*agents[a]->separation*proxscale);
+		agents[a]->vx -= dx*agents[a]->separation*proxscale;
+		agents[a]->vy -= dy*agents[a]->separation*proxscale;
 	    }
 	}
     }
@@ -116,22 +127,22 @@ void Swarm::align(int a)
 {
     float dvx = avgvelocity[0] - agents[a]->vx;
     float dvy = avgvelocity[1] - agents[a]->vy;
-    agents[a]->vx = agents[a]->vx + (dvx*agents[a]->alignment);
-    agents[a]->vy = agents[a]->vy + (dvy*agents[a]->alignment);
+    agents[a]->vx += dvx*agents[a]->alignment;
+    agents[a]->vy += dvy*agents[a]->alignment;
 }
 
 void Swarm::cohere(int a)
 {
     float dx = centroid[0] - agents[a]->x;
     float dy = centroid[1] - agents[a]->y;
-    agents[a]->vx = agents[a]->vx + (dx*agents[a]->coherence);
-    agents[a]->vy = agents[a]->vy + (dy*agents[a]->coherence);
+    agents[a]->vx += (dx*agents[a]->coherence);
+    agents[a]->vy += (dy*agents[a]->coherence);
 }
 
 void Swarm::gravitate(int a)
 {
     float dx = gravpoint[0] - agents[a]->x;
     float dy = gravpoint[1] - agents[a]->y;
-    agents[a]->vx = agents[a]->vx + (dx*gravity);
-    agents[a]->vy = agents[a]->vy + (dy*gravity);
+    agents[a]->vx += dx*gravity;
+    agents[a]->vy += dy*gravity;
 }

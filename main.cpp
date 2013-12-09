@@ -19,7 +19,7 @@ int main(int argc, char** argv)
 	      std::cout<<"Agent "<<i<<": ";
 	      std::vector<float>::iterator it;
 	      for(it = agentData.begin(); it != agentData.end(); ++it)
-		   std::cout<<*it<<", ";
+		  { std::cout<<*it<<", "; }
 	      std::cout<<std::endl;
 	 }
     }
