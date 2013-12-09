@@ -25,7 +25,7 @@ void Swarm::addAgent()
     p->alignment	= 0.05f;
     p->coherence	= 0.02f;
     p->inertia		= 0.4f;
-    p->maxvel		= 0.3f;
+    p->maxvel		= 0.01f;
     p->septhresh	= 0.2f;
     
     agents.push_back(std::move(p));    
