@@ -21,7 +21,7 @@
 typedef std::vector< std::vector<float> > vvfloat;
 
 // Global variables
-char title[] = "Bouncing Ball (2D)";  // Windowed mode's title
+char title[] = "boids 2d";  // Windowed mode's title
 int windowWidth  = 640;     // Windowed mode's width
 int windowHeight = 480;     // Windowed mode's height
 int windowPosX   = 50;      // Windowed mode's top-left corner x
@@ -34,7 +34,7 @@ GLfloat ballXMax, ballXMin, ballYMax, ballYMin; // Ball's center (x, y) bounds
 GLfloat xSpeed = 0.02f;      // Ball's speed in x and y directions
 GLfloat ySpeed = 0.007f;
 int refreshMillis = 30;      // Refresh period in milliseconds
-Swarm s = Swarm(10);
+Swarm* s = new Swarm(10);
 
 // Projection clipping area
 GLdouble clipAreaXLeft, clipAreaXRight, clipAreaYBottom, clipAreaYTop;
@@ -49,7 +49,7 @@ void display() {
     int numSegments = 100;
     GLfloat angle;
     vvfloat v;
-    v = s.getBoids();
+    v = s->getBoids();
     std::vector<float> firstboid = v[0];
     std::cout<<firstboid[0]<<" "<<firstboid[1]<<std::endl;
      
@@ -64,14 +64,14 @@ void display() {
 
     // Use triangular segments to form a circle
     glBegin(GL_TRIANGLE_FAN);
-    glColor3f((((float)rand() % RAND_MAX) / RAND_MAX),
-	      (((float)rand() % RAND_MAX) / RAND_MAX),
-	      (((float)rand() % RAND_MAX) / RAND_MAX)); // random colour
+    
+    glColor3f(((float) rand() / (RAND_MAX)),
+	      ((float) rand() / (RAND_MAX)),
+	      ((float) rand() / (RAND_MAX)));
     
     glVertex2f(0.0f, 0.0f);       // Center of circle
-
      
-    for (int i = 0; i <= numSegments; i++) { // Last vertex same as first vertex
+    for (int i = 0; i <= numSegments; i++) {  // Last vertex same as first vertex
 	angle = i * 2.0f * PI / numSegments;  // 360 deg for all segments
 	glVertex2f(cos(angle) * ballRadius, sin(angle) * ballRadius);
     }
@@ -83,7 +83,7 @@ void display() {
 /* Call back when the windows is re-sized */
 void reshape(GLsizei width, GLsizei height) {
     // Compute aspect ratio of the new window
-    if (height == 0) height = 1;                // To prevent divide by 0
+    if (height == 0) { height = 1; }               // To prevent divide by 0
     GLfloat aspect = (GLfloat)width / (GLfloat)height;
  
     // Set the viewport to cover the new window

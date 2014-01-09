@@ -6,7 +6,7 @@
 #include <time.h>
 #include "Swarm.h"
 
-Swarm::Swarm(int numAgents) : numAgents(numAgents), friction(0.25), gravity(0.02)
+Swarm::Swarm(int numAgents) : numAgents(numAgents), friction(0.25), gravity(0.03)
 {
     srand(time(NULL)); // seed random gen
     std::cout<<"Swarm creating " <<numAgents<< " Agents...\n";
@@ -74,6 +74,7 @@ void Swarm::genFrame(int a)
     agents[a]->vy = clip(agents[a]->vy,agents[a]->maxvel * -1,agents[a]->maxvel);
 
     // friction
+    float temp = agents[a]->x;
     agents[a]->x += agents[a]->vx * (1-friction);
     agents[a]->y += agents[a]->vy * (1-friction);
 
